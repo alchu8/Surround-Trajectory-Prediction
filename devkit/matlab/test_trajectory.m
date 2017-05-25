@@ -3,13 +3,22 @@ base_dir = '../../data/2011_09_26/2011_09_26_drive_0001_sync';
 calib_dir = '../../data/2011_09_26';
 
 tracklets = readTracklets([base_dir '/tracklet_labels.xml']); % slow version
-
 %%
-figure();
+veh_type = {};
 for it = 1:numel(tracklets)
-    if strcmp(tracklets{it}.objectType, 'Car') == 1
-        plot(tracklets{it}.poses(1,:), tracklets{it}.poses(2,:), '-o');
-        hold on;
-    end
+    veh_type{it} = tracklets{it}.objectType;
 end
-hold off;
+veh_type = unique(veh_type);
+%%
+
+for type = 1:numel(veh_type)
+    figure();
+    for it = 1:numel(tracklets)
+        if strcmp(tracklets{it}.objectType, veh_type(type)) == 1
+            plot(tracklets{it}.poses(1,:), tracklets{it}.poses(2,:), '-o');
+            hold on;
+        end
+    end
+    hold off;
+    title(sprintf('Trajectory of surrounding %s', string(veh_type(type))));
+end
