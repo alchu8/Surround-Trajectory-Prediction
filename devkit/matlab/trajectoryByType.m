@@ -1,7 +1,7 @@
-%function output = trajectoryByType(tracklet_folder_dir)
-    %if nargin < 1
+function trajectory_type = trajectoryByType(tracklet_folder_dir)
+    if nargin < 1
         tracklet_folder_dir = '../../data/tracklets';
-    %end
+    end
     [tracklet_files] = textread(strcat(tracklet_folder_dir, '/tracklet_list.txt'), '%s');
     tracklets = cell(size(tracklet_files, 1), 1);
     for i = 1:size(tracklet_files, 1)
@@ -9,7 +9,7 @@
     end
     
     veh_type = {'Car' 'Van' 'Truck' 'Pedestrian' 'Person (sitting)' 'Cyclist' 'Tram' 'Misc'}; 
-    %%
+
     trajectory_type = cell(numel(veh_type),1);
     for type = 1:numel(veh_type)
         for dataNum = 1:size(tracklets, 1)
@@ -22,7 +22,7 @@
         end
     end
     clear tracklet_temp;
-    %%
+    
     for type = 1:numel(veh_type)
         figure();
         for vehNum = 1:size(trajectory_type{type, 1}, 1)
@@ -36,4 +36,4 @@
     end
     
     
-%end
+end
