@@ -52,16 +52,16 @@ if nargin < 5,
 end
 
 
-m = length(a);
-n = length(b);
+m = size(a,1);
+n = size(b,1);
 
 % put the shorter first
 if n<m,
     temp = a;
     a = b;
     b = temp;
-    m = length(a);
-    n = length(b);
+    m = size(a,1);
+    n = size(b,1);
 end
 
 lcstable = zeros(m+1, n+1);
@@ -71,7 +71,7 @@ prevy = zeros(m+1, n+1);
 for i=1:m,
    for j = (i-delta):1:(i+delta),
       
-      if (j>0 & j<n)
+      if (j>0 && j<n)
       
         if ( norm(a(i,:) - b(j,:)) <= epsilon)
             lcstable(i+1,j+1) = lcstable(i,j)+1;

@@ -11,10 +11,14 @@ function W = SimGraph_Full(M, sigma)
 %   Year  : 2011/2012
 %   Bachelor Thesis
 
+load 'trajectory_type.mat';
+
 % Compute distance matrix
-W = squareform(pdist(M'));
+W = squareform(mypDist(trajectory_type{1,1}));
 
 % Apply Gaussian similarity function
-W = simGaussian(W, sigma);
+W = simGaussian(W, 1);
+
+save('W.mat', 'W');
 
 end
