@@ -1,3 +1,5 @@
+%cell_in should be trajectory_type{type_number, 1}
+%out: n*(n-1)/2 by 1 array of distances
 function out = mypDist(cell_in)
     out = zeros(numel(cell_in)*(numel(cell_in)-1)/2, 1);
     count = 1;
