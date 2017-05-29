@@ -34,6 +34,4 @@ function trajectory_type = trajectoryByType(tracklet_folder_dir)
         xlim([-50 200]);
         title(sprintf('Trajectory of surrounding %s', veh_type{type}));
     end
-    
-    
 end
