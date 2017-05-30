@@ -61,11 +61,16 @@ if Type == 3
 end
 
 % now use the fuzzy C means algorithm to cluster U row-wise
-% C will be a n-by-1 matrix containing the cluster number for
-% each data point
+% rows of Center are coordinates for each cluster center
+% membership matrix contains membership values of each data to each cluster
+% k x d
 [Center, membership, ~] = fcm(U, k, [1.1 NaN NaN 0]);
+% member_hard contains cluster id for each data point
+% membership_value contains the confidence of membership for each data
 [membership_value, member_hard] = max(membership);
 
+% C will be a n-by-1 matrix containing the cluster number for
+% each data point
 % now convert C to a n-by-k matrix containing the k indicator
 % vectors as columns
 %C = sparse(1:size(D, 1), C, 1);
