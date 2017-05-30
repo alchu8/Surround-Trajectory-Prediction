@@ -17,8 +17,8 @@ load 'trajectory_type.mat';
 W = squareform(mypDist(trajectory_type{1,1}));
 
 % Apply Gaussian similarity function
-W = simGaussian(W, 1);
+W = simGaussian(W, 0.5);
 
-save('W.mat', 'W');
+save('W_cars.mat', 'W');
 
 end

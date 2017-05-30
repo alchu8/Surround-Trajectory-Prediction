@@ -1,4 +1,4 @@
-function [C, L, U] = SpectralClustering(W, k, Type)
+function [Center, member_hard, membership_value] = SpectralClustering(W, k, Type)
 %SPECTRALCLUSTERING Executes spectral clustering algorithm
 %   Executes the spectral clustering algorithm defined by
 %   Type on the adjacency matrix W and returns the k cluster
@@ -60,14 +60,14 @@ if Type == 3
     U = bsxfun(@rdivide, U, sqrt(sum(U.^2, 2)));
 end
 
-% now use the k-means algorithm to cluster U row-wise
+% now use the fuzzy C means algorithm to cluster U row-wise
 % C will be a n-by-1 matrix containing the cluster number for
 % each data point
-C = kmeans(U, k, 'start', 'cluster', ...
-                 'EmptyAction', 'singleton');
-             
+[Center, membership, ~] = fcm(U, k, [1.1 NaN NaN 0]);
+[membership_value, member_hard] = max(membership);
+
 % now convert C to a n-by-k matrix containing the k indicator
 % vectors as columns
-C = sparse(1:size(D, 1), C, 1);
+%C = sparse(1:size(D, 1), C, 1);
 
 end

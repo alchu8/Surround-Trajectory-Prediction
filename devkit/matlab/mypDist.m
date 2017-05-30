@@ -7,7 +7,7 @@ function out = mypDist(cell_in)
         a = cell_in{i, 1}';
         for j = i+1:numel(cell_in)
             b = cell_in{j, 1}';
-            out(count) = MatLabLCSS(a, b, 3, 5);
+            out(count) = MatLabLCSS(a, b, 1, 1);
             count = 1 + count;
         end
     end
