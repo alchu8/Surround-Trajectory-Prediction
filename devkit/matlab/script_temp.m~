@@ -35,11 +35,11 @@ W_all{8} = W_mix;
 %%
 load('W_all.mat');
 load('trajectory_type.mat');
-veh_type = 8;
+veh_type = 2;
 W_now = W_all{veh_type};
-for k = 2:4
+for k = 10
     [Center, member_hard, membership_value] = SpectralClustering(W_now, k, 3);
     plot_clusters(trajectory_type{veh_type}, Cluster2Cell(member_hard), false);
 end
 %%
-traj_cluster = get_clustered_traj(trajectory_type, W_all, [30, 15, 4, 20, 5, 6, 3, 3]);
+traj_cluster = get_clustered_traj(trajectory_type, W_all, [])
