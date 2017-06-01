@@ -77,16 +77,16 @@ O_max = max(O);
 O_min = min(O);
 O_uniq = unique(O);
 %%
-traj_obs = traj_cluster;
+traj_obs_C1 = traj_cluster;
 for i = 1:size(traj_cluster)%veh type
     
     for j = 1:size(traj_cluster{i, 1}, 1)%cluster
         for k = 1:size(traj_cluster{i, 1}{j, 1}, 1)%traj in cluster
             obs = zeros(1, size(traj_cluster{i, 1}{j, 1}{k, 1}, 2));
             for l = 1:size(traj_cluster{i, 1}{j, 1}{k, 1}, 2)%crd
-                obs(l) = map2Obs(traj_cluster{i, 1}{j, 1}{k, 1}(1, l), traj_cluster{i, 1}{j, 1}{k, 1}(2, l));
+                [obs(l), obs_num] = map2Obs(traj_cluster{i, 1}{j, 1}{k, 1}(1, l), traj_cluster{i, 1}{j, 1}{k, 1}(2, l));
             end
-            traj_obs{i, 1}{j, 1}{k, 1} = obs;
+            traj_obs_C1{i, 1}{j, 1}{k, 1} = obs;
         end
     end
 end
