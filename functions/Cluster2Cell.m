@@ -1,4 +1,6 @@
 function cell_out = Cluster2Cell(member_hard)
+% according to member_hard by SpectralClustering.m, return cell object
+% containing indices for each cluster
     k = unique(member_hard);
     cell_out = cell(length(k), 1);
     for i = k

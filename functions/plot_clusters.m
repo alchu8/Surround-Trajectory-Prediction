@@ -1,4 +1,10 @@
 function plot_clusters(traj, cell_out, per)
+% plot trajectory clusters for specific vehicle type
+% traj: trajectory of specific type, i.e. trajectory_type{1}
+% cell_out: output of Cluster2Cell.m
+% per: boolean value to decide plot figure per cluster or one figure of all
+% clusters
+
     if per == true
         for i = 1:size(cell_out, 1)
             figure;
