@@ -43,3 +43,56 @@ for k = 2:4
 end
 %%
 traj_cluster = get_clustered_traj(trajectory_type, W_all, [30, 15, 4, 20, 5, 6, 3, 3]);
+%%
+x = [];
+y = [];
+
+for type = 1:size(trajectory_type, 1)
+    trajPerType = trajectory_type{type};
+    for car = 1:size(trajPerType, 1)
+        trajSpecific = trajPerType{car};
+        x = [x, trajSpecific(1, :)];
+        y = [y, trajSpecific(2, :)];
+    end
+end
+%x = round(x.*10) + 60;
+%y = round(y.*10) + 401;
+
+x_min = min(x);
+x_max = max(x);
+x_std = std(x);
+x_uniq = unique(x);
+y_min = min(y);
+y_max = max(y);
+y_std = std(y);
+y_uniq = unique(y);
+
+%%
+O = zeros(length(x), 1);
+for i = 1:length(x)
+    O(i) = map2Obs(x(i), y(i));
+end
+
+O_max = max(O);
+O_min = min(O);
+O_uniq = unique(O);
+%%
+traj_obs = traj_cluster;
+for i = 1:size(traj_cluster)%veh type
+    
+    for j = 1:size(traj_cluster{i, 1}, 1)%cluster
+        for k = 1:size(traj_cluster{i, 1}{j, 1}, 1)%traj in cluster
+            obs = zeros(1, size(traj_cluster{i, 1}{j, 1}{k, 1}, 2));
+            for l = 1:size(traj_cluster{i, 1}{j, 1}{k, 1}, 2)%crd
+                obs(l) = map2Obs(traj_cluster{i, 1}{j, 1}{k, 1}(1, l), traj_cluster{i, 1}{j, 1}{k, 1}(2, l));
+            end
+            traj_obs{i, 1}{j, 1}{k, 1} = obs;
+        end
+    end
+end
+
+
+
+
+
+

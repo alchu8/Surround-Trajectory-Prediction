@@ -1,4 +1,4 @@
-O = 3;
+O = 5;
 Q = 2;
 
 % "true" parameters
