@@ -35,14 +35,14 @@ W_all{8} = W_mix;
 %%
 load('W_all.mat');
 load('trajectory_type.mat');
-veh_type = 8;
+veh_type = 4;
 W_now = W_all{veh_type};
-for k = 2:4
+for k = 20
     [Center, member_hard, membership_value] = SpectralClustering(W_now, k, 3);
-    plot_clusters(trajectory_type{veh_type}, Cluster2Cell(member_hard), false);
+    plot_clusters(trajectory_type{veh_type}, Cluster2Cell(member_hard, membership_value, 0.9), true);
 end
 %%
-traj_cluster = get_clustered_traj(trajectory_type, W_all, [30, 15, 4, 20, 5, 6, 3, 3]);
+traj_cluster_conf = get_clustered_traj(trajectory_type, W_all, [30, 15, 4, 20, 5, 6, 3, 3]);
 %%
 x = [];
 y = [];
@@ -77,19 +77,26 @@ O_max = max(O);
 O_min = min(O);
 O_uniq = unique(O);
 %%
-traj_obs_C1 = traj_cluster;
-for i = 1:size(traj_cluster)%veh type
-    
-    for j = 1:size(traj_cluster{i, 1}, 1)%cluster
-        for k = 1:size(traj_cluster{i, 1}{j, 1}, 1)%traj in cluster
-            obs = zeros(1, size(traj_cluster{i, 1}{j, 1}{k, 1}, 2));
-            for l = 1:size(traj_cluster{i, 1}{j, 1}{k, 1}, 2)%crd
-                [obs(l), obs_num] = map2Obs(traj_cluster{i, 1}{j, 1}{k, 1}(1, l), traj_cluster{i, 1}{j, 1}{k, 1}(2, l));
+traj_obs_C1_conf = traj_cluster_conf;
+for i = 1:size(traj_cluster_conf)%veh type
+    for j = 1:size(traj_cluster_conf{i, 1}, 1)%cluster
+        for k = 1:size(traj_cluster_conf{i, 1}{j, 1}, 1)%traj in cluster
+            obs = zeros(1, size(traj_cluster_conf{i, 1}{j, 1}{k, 1}, 2));
+            for l = 1:size(traj_cluster_conf{i, 1}{j, 1}{k, 1}, 2)%crd
+                [obs(l), obs_num] = map2Obs(traj_cluster_conf{i, 1}{j, 1}{k, 1}(1, l), traj_cluster_conf{i, 1}{j, 1}{k, 1}(2, l));
             end
-            traj_obs_C1{i, 1}{j, 1}{k, 1} = obs;
+            traj_obs_C1_conf{i, 1}{j, 1}{k, 1} = obs;
         end
     end
 end
+%%
+% obs = 12852
+hmm_models = train_hmm(traj_obs_C1_conf, 13090, 5, 10);
+
+%%
+loglik = dhmm_logprob(data, prior2, transmat2, obsmat2);
+
+
 
 
 

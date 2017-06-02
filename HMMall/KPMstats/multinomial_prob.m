@@ -12,9 +12,14 @@ function B = eval_pdf_cond_multinomial(data, obsmat)
 % B(i,t) = Pr(y(t) | Q(t)=i)
 
 [Q O] = size(obsmat);
-T = prod(size(data)); % length(data);
+T = numel(data); % length(data);
 B = zeros(Q,T);
 
 for t=1:T
-  B(:,t) = obsmat(:, data(t));
+  try
+      B(:,t) = obsmat(:, data(t));
+  catch MException
+      disp(size(obsmat));
+      disp(t);
+  end
 end

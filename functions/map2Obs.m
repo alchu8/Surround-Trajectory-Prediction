@@ -25,12 +25,12 @@ function [obs, obs_num] = map2Obs(x, y, multi_C)
         y = y_max;
     end
 
-    x_lim = round(multi_C*(x_max - x_min));
-    y_lim = round(multi_C*(y_max - y_min));
-    obs_num = x_lim*y_lim;
-    
     x_shift = -round(multi_C*x_min) + 1;
     y_shift = -round(multi_C*y_min) + 1;
+    
+    x_lim = round(multi_C*x_max) + x_shift;
+    y_lim = round(multi_C*y_max) + y_shift;
+    obs_num = x_lim*y_lim;
     
     x = round(x*multi_C) + x_shift;
     y = round(y*multi_C) + y_shift;
