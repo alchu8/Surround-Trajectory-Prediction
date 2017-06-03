@@ -90,11 +90,39 @@ for i = 1:size(traj_cluster_conf)%veh type
     end
 end
 %%
-% obs = 12852
+% obs = 13090
 hmm_models = train_hmm(traj_obs_C1_conf, 13090, 5, 10);
 
 %%
-loglik = dhmm_logprob(data, prior2, transmat2, obsmat2);
+LL_all = test_hmm_all(traj_obs_C1_conf, hmm_models);
+%%
+LL_all_max = test_hmm_all_max(traj_obs_C1_conf, hmm_models);
+%%
+err_cnt = 0;
+count = 0;
+for type = 1:size(LL_all_max, 1)
+    for cluster = 1:size(LL_all_max{type, 1}, 1)
+        for data = 1:size(LL_all_max{type, 1}{cluster, 1}, 1)
+            count = count + 1;
+            if LL_all_max{type, 1}{cluster, 1}{data, 1}.type ~= type...
+                    && LL_all_max{type, 1}{cluster, 1}{data, 1}.cluster ~= cluster
+                err_cnt = err_cnt + 1;
+                sprintf("error: in type=%i, cluster=%i...data=%i, type=%i, cluster=%i",...
+                    type, cluster, data, LL_all_max{type, 1}{cluster, 1}{data, 1}.type, LL_all_max{type, 1}{cluster, 1}{data, 1}.cluster)
+            end
+        end
+    end
+end
+
+
+
+
+
+
+
+
+
+
 
 
 
