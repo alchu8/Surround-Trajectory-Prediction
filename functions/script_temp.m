@@ -105,7 +105,7 @@ for type = 1:size(LL_all_max, 1)
         for data = 1:size(LL_all_max{type, 1}{cluster, 1}, 1)
             count = count + 1;
             if LL_all_max{type, 1}{cluster, 1}{data, 1}.type ~= type...
-                    && LL_all_max{type, 1}{cluster, 1}{data, 1}.cluster ~= cluster
+                    || LL_all_max{type, 1}{cluster, 1}{data, 1}.cluster ~= cluster
                 err_cnt = err_cnt + 1;
                 sprintf("error: in type=%i, cluster=%i...data=%i, type=%i, cluster=%i",...
                     type, cluster, data, LL_all_max{type, 1}{cluster, 1}{data, 1}.type, LL_all_max{type, 1}{cluster, 1}{data, 1}.cluster)
