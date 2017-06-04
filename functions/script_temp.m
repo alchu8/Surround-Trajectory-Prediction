@@ -2,11 +2,11 @@
 traj = trajectory_type{2, 1};
 %figure();
 for i = 1:size(cell_out, 1)
-    figure();
+    figure(); hold on;
     color = rand(1,3);
     for n = cell_out{i}
-        plot(traj{n, 1}(1, :), traj{n ,1}(2, :), 'Color', color, 'Marker', '*', 'MarkerIndices', 1);
-        hold on;
+        plot(traj{n, 1}(1, :), traj{n ,1}(2, :), 'Color', color);
+        plot(traj{n, 1}(1, 1), traj{n ,1}(2, 1), 'Color', color, 'Marker', '*');
     end
     hold off;
 end
@@ -14,7 +14,7 @@ hold off;
 
 %%
 W_all = cell(8, 1);
-load('W_cars.mat');
+load('W_car.mat');
 load('W_van.mat');
 load('W_trk.mat');
 load('W_ped.mat');
@@ -23,7 +23,7 @@ load('W_cyc.mat');
 load('W_trm.mat');
 load('W_mix.mat');
 
-W_all{1} = W;
+W_all{1} = W_car;
 W_all{2} = W_van;
 W_all{3} = W_trk;
 W_all{4} = W_ped;
@@ -97,7 +97,7 @@ hmm_models = train_hmm(traj_obs_C1_conf, 13090, 5, 10);
 LL_all = test_hmm_all(traj_obs_C1_conf, hmm_models);
 %%
 LL_all_max = test_hmm_all_max(traj_obs_C1_conf, hmm_models);
-%%
+%% validation
 err_cnt = 0;
 count = 0;
 for type = 1:size(LL_all_max, 1)
@@ -105,10 +105,10 @@ for type = 1:size(LL_all_max, 1)
         for data = 1:size(LL_all_max{type, 1}{cluster, 1}, 1)
             count = count + 1;
             if LL_all_max{type, 1}{cluster, 1}{data, 1}.type ~= type...
-                    && LL_all_max{type, 1}{cluster, 1}{data, 1}.cluster ~= cluster
+                    || LL_all_max{type, 1}{cluster, 1}{data, 1}.cluster ~= cluster
                 err_cnt = err_cnt + 1;
-                sprintf("error: in type=%i, cluster=%i...data=%i, type=%i, cluster=%i",...
-                    type, cluster, data, LL_all_max{type, 1}{cluster, 1}{data, 1}.type, LL_all_max{type, 1}{cluster, 1}{data, 1}.cluster)
+                %sprintf("error: in type=%i, cluster=%i...data=%i, type=%i, cluster=%i",...
+                    %type, cluster, data, LL_all_max{type, 1}{cluster, 1}{data, 1}.type, LL_all_max{type, 1}{cluster, 1}{data, 1}.cluster)
             end
         end
     end
