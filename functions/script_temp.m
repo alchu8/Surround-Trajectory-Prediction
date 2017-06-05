@@ -78,13 +78,19 @@ O_min = min(O);
 O_uniq = unique(O);
 %% mapping trajectories from {x, y} to {obs_label}
 [traj_clustered_obs, obs_num] = map2Obs(traj_clustered);
+
+%% split into training and testing set
+[trainset, testset] = train_test_split(traj_clustered_obs, 0.75);
+
 %% train hmm on each cluster
-hmm_models = train_hmm(traj_clustered_obs, obs_num, 5, 10);
+hmm_models = train_hmm(trainset, obs_num, 5, 10);
+
 %% retrieve max struct for each test trajectory
-LL_all_max = test_hmm_all_max(traj_clustered_obs, hmm_models);
+LL_all_max = test_hmm_all_max(testset, hmm_models);
+
 %% validation
 err_cnt = 0; % misclassifications
-count = 0; % total number of trajectories
+count = 0; % total number of test trajectories
 for type = 1:size(LL_all_max, 1)
     for cluster = 1:size(LL_all_max{type, 1}, 1)
         for data = 1:size(LL_all_max{type, 1}{cluster, 1}, 1)
