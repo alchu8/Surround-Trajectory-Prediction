@@ -1,39 +1,52 @@
-function [obs, obs_num] = map2Obs(x, y, multi_C)
-% map a pair of (x, y) to an observation label.
-% x and y will be multiply by multi_C before rounded, increase multi_C will
+function [traj_clustered_obs, obs_num] = map2Obs(traj_clustered, multi_C)
+% map each pair of (x, y) to an observation label.
+% traj_clustered: trajectories organized into clusters in 2 x T
+% x and y will be multiplied by multi_C before rounded, increase multi_C will
 % also increase obs_num (number of total observations) by square, the
 % default multi_C is 1.
+% returns cell structure in same format with trajectories in 1 x T
     
-    if nargin < 3
+    if nargin < 2
         multi_C = 1;
     end
     
-    x_max = 147.1436;
-    x_min = -5.9188;
-    y_max = 44.0645;
-    y_min = -40.0455;
-    
-    if x < x_min
-        x = x_min;
-    elseif x > x_max
-        x = x_max;
-    end
-    
-    if y < y_min
-        y = y_min;
-    elseif y > y_max
-        y = y_max;
+    x_max = -Inf;
+    x_min = Inf;
+    y_max = -Inf;
+    y_min = Inf;
+    % find max and min in the entire dataset
+    for i = 1:size(traj_clustered) % veh type
+        for j = 1:size(traj_clustered{i, 1}, 1) % cluster
+            for k = 1:size(traj_clustered{i, 1}{j, 1}, 1) % traj in cluster
+                x = traj_clustered{i, 1}{j, 1}{k, 1}(1, :);
+                y = traj_clustered{i, 1}{j, 1}{k, 1}(2, :);
+                x_max = max([x x_max]); % running max
+                x_min = min([x x_min]); % running min
+                y_max = max([y y_max]);
+                y_min = min([y y_min]);
+            end
+        end
     end
 
-    x_shift = -round(multi_C*x_min) + 1;
-    y_shift = -round(multi_C*y_min) + 1;
+    x_offset = -round(multi_C*x_min) + 1;
+    y_offset = -round(multi_C*y_min) + 1;
     
-    x_lim = round(multi_C*x_max) + x_shift;
-    y_lim = round(multi_C*y_max) + y_shift;
-    obs_num = x_lim*y_lim;
+    x_range = round(multi_C*x_max) + x_offset;
+    y_range = round(multi_C*y_max) + y_offset;
+    obs_num = x_range*y_range;
     
-    x = round(x*multi_C) + x_shift;
-    y = round(y*multi_C) + y_shift;
-    
-    obs = y_lim*(x-1) + y;
+    traj_clustered_obs = traj_clustered;
+    % map 2 x T to 1 x T
+    for i = 1:size(traj_clustered) % veh type
+        for j = 1:size(traj_clustered{i, 1}, 1) % cluster
+            for k = 1:size(traj_clustered{i, 1}{j, 1}, 1) % traj in cluster
+                x = traj_clustered{i, 1}{j, 1}{k, 1}(1, :);
+                y = traj_clustered{i, 1}{j, 1}{k, 1}(2, :);
+                x = round(x*multi_C) + x_offset;
+                y = round(y*multi_C) + y_offset;
+                obs = y_range*(x-1) + y; % 1 x T
+                traj_clustered_obs{i, 1}{j, 1}{k, 1} = obs;
+            end
+        end
+    end
 end
