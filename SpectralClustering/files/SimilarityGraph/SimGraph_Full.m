@@ -1,4 +1,4 @@
-function W = SimGraph_Full(M, sigma)
+function W_car = SimGraph_Full(M, sigma)
 % SIMGRAPH_FULL Returns full similarity graph
 %   Returns adjacency matrix for a full similarity graph where
 %   a Gaussian similarity function with parameter sigma is
@@ -14,11 +14,11 @@ function W = SimGraph_Full(M, sigma)
 load 'trajectory_type.mat';
 
 % Compute distance matrix
-W = squareform(mypDist(trajectory_type{1,1}));
+W_car = squareform(mypDist(trajectory_type{1,1}));
 
 % Apply Gaussian similarity function
-W = simGaussian(W, 0.5);
+W_car = simGaussian(W_car, 0.5);
 
-save('W_cars.mat', 'W');
+save('W_car.mat', 'W_car');
 
 end
