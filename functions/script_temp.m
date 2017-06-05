@@ -41,8 +41,8 @@ for k = 20
     [Center, member_hard, membership_value] = SpectralClustering(W_now, k, 3);
     plot_clusters(trajectory_type{veh_type}, Cluster2Cell(member_hard, membership_value, 0.9), true);
 end
-%%
-traj_cluster_conf = get_clustered_traj(trajectory_type, W_all, [30, 15, 4, 20, 5, 6, 3, 3]);
+%% cluster trajectories with initial k's
+traj_clustered = get_clustered_traj(trajectory_type, W_all, [50, 20, 10, 30, 10, 15, 5, 5]);
 %%
 x = [];
 y = [];
@@ -76,30 +76,15 @@ end
 O_max = max(O);
 O_min = min(O);
 O_uniq = unique(O);
-%%
-traj_obs_C1_conf = traj_cluster_conf;
-for i = 1:size(traj_cluster_conf)%veh type
-    for j = 1:size(traj_cluster_conf{i, 1}, 1)%cluster
-        for k = 1:size(traj_cluster_conf{i, 1}{j, 1}, 1)%traj in cluster
-            obs = zeros(1, size(traj_cluster_conf{i, 1}{j, 1}{k, 1}, 2));
-            for l = 1:size(traj_cluster_conf{i, 1}{j, 1}{k, 1}, 2)%crd
-                [obs(l), obs_num] = map2Obs(traj_cluster_conf{i, 1}{j, 1}{k, 1}(1, l), traj_cluster_conf{i, 1}{j, 1}{k, 1}(2, l));
-            end
-            traj_obs_C1_conf{i, 1}{j, 1}{k, 1} = obs;
-        end
-    end
-end
-%%
-% obs = 13090
-hmm_models = train_hmm(traj_obs_C1_conf, 13090, 5, 10);
-
-%%
-LL_all = test_hmm_all(traj_obs_C1_conf, hmm_models);
-%%
-LL_all_max = test_hmm_all_max(traj_obs_C1_conf, hmm_models);
+%% mapping trajectories from {x, y} to {obs_label}
+[traj_clustered_obs, obs_num] = map2Obs(traj_clustered);
+%% train hmm on each cluster
+hmm_models = train_hmm(traj_clustered_obs, obs_num, 5, 10);
+%% retrieve max struct for each test trajectory
+LL_all_max = test_hmm_all_max(traj_clustered_obs, hmm_models);
 %% validation
-err_cnt = 0;
-count = 0;
+err_cnt = 0; % misclassifications
+count = 0; % total number of trajectories
 for type = 1:size(LL_all_max, 1)
     for cluster = 1:size(LL_all_max{type, 1}, 1)
         for data = 1:size(LL_all_max{type, 1}{cluster, 1}, 1)
@@ -113,21 +98,5 @@ for type = 1:size(LL_all_max, 1)
         end
     end
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
