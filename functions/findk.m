@@ -4,7 +4,7 @@ function [prototypes_pre, cluster_id] = findk(trajectory_data, cell_out, members
 % cell_out: k-clustered trajectory indices organized in cells for a vehicle
 % type, returned by Cluster2Cell on clusters found by SpectralClustering on
 % large k
-% membership_value: for each data, indicates confidence value in [0,1]
+% membership_value: for each data, confidence value in [0,1]
 % returns k route prototypes before merging and id of remaining clusters
 % after merging
     % first, reparameterize trajectories from F = {x(t),y(t)} to {x(s),y(s)}
@@ -60,7 +60,11 @@ function [prototypes_pre, cluster_id] = findk(trajectory_data, cell_out, members
     [i, j] = find(sim_graph < dist_thres);
     n = j(j > i); % consider only upper triangle since matrix is symmetric
     cluster_id = 1:k;
-    for i = n
-        cluster_id(cluster_id == i) = []; % merge clusters
+    for i = 1:length(n)
+        try
+            cluster_id(cluster_id == n(i)) = []; % merge clusters
+        catch ME
+            disp(ME.message);
+        end
     end
 end

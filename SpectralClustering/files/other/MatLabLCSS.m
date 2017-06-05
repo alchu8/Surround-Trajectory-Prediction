@@ -1,7 +1,7 @@
-function similarity=MatLabLCSS(a, b, delta, epsilon, transpose)
+function distance=MatLabLCSS(a, b, delta, epsilon, transpose)
 % Time Series matching using the Longest Common Subsequence within region of delta and epsilon.
 %
-% similarity = lcsMatching(a, b, delta, epsilon, transpose)
+% distance = lcsMatching(a, b, delta, epsilon, transpose)
 %
 % INPUT:
 % a = [m x 2] time series A
@@ -12,7 +12,7 @@ function similarity=MatLabLCSS(a, b, delta, epsilon, transpose)
 %             vertically, so as the matching is better visualized
 %
 % OUTPUT:
-% The similarity between A and B defined as LCSS(A,B) / max(|A|, |B|)    
+% The distance between A and B defined as 1 - LCSS(A,B) / min(|A|, |B|)    
 %
 % Original LCS script for discrete symbols by Roger Jang.
 % Time Series Matching, Minimum Bounding Envelope and 
@@ -45,7 +45,7 @@ function similarity=MatLabLCSS(a, b, delta, epsilon, transpose)
 setTranspose = 1;
 if nargin == 0, demo; return; end
 if nargin < 4 ,
-    disp('similarity = lcsMatching(a, b, delta, epsilon, transpose)');
+    disp('distance = lcsMatching(a, b, delta, epsilon, transpose)');
 end
 if nargin < 5,
     setTranspose = 0;
@@ -97,10 +97,10 @@ disp(max(lcstable(m, :)));
 prevx = prevx(2:end, 2:end)-1;
 prevy = prevy(2:end, 2:end)-1;
 
-% ====== LCS similarity 
+% ====== LCS distance 
 [lcs, pos]= max(lcstable(m, :));
-similarity = 1 - lcs / (min(m,n));
-disp(similarity);
+distance = 1 - lcs / (min(m,n));
+disp(distance);
 
 % ====== Optimal path of the dynamical programming
 
