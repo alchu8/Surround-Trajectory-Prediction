@@ -124,18 +124,7 @@ for type = 1:size(LL_all_max, 1)
 end
 %% get max average LL
 LL_avg_all = get_avg_LL_all(testset, hmm_models);
-err_cnt = 0;
-count = 0;
-for type = 1:size(LL_avg_all, 1)
-    for cluster = 1:size(LL_avg_all{type, 1}, 1)
-        for data = 1:size(LL_avg_all{type, 1}{cluster, 1}, 1)
-            count = count + 1;
-            if LL_avg_all{type, 1}{cluster, 1}{data, 1}(type) ~= max(LL_avg_all{type, 1}{cluster, 1}{data, 1})
-                err_cnt = err_cnt + 1;
-            end
-        end
-    end
-end
+
 
 
 
