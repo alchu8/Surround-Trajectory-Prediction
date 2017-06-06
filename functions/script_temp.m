@@ -88,7 +88,7 @@ hmm_models = train_hmm(trainset, obs_num, 5, 10);
 %% retrieve max struct for each test trajectory
 LL_all_max = test_hmm_all_max(testset, hmm_models);
 
-%% validation without type
+% validation without type
 err_cnt = 0; % misclassifications
 count = 0; % total number of test trajectories
 for type = 1:size(LL_all_max, 1)
@@ -104,14 +104,14 @@ for type = 1:size(LL_all_max, 1)
         end
     end
 end
-
+sprintf('The error rate of predicting without type: %f', err_cnt/count)
 %% validation with type
 LL_all_max = test_hmm_all_max(testset, hmm_models, true);
+
 err_cnt = 0; % misclassifications
 count = 0; % total number of test trajectories
 for type = 1:size(LL_all_max, 1)
     for cluster = 1:size(LL_all_max{type, 1}, 1)
-        size(LL_all_max{type, 1}{cluster, 1}, 1)
         for data = 1:size(LL_all_max{type, 1}{cluster, 1}, 1)
             count = count + 1;
             if LL_all_max{type, 1}{cluster, 1}{data, 1}.cluster ~= cluster
@@ -122,22 +122,43 @@ for type = 1:size(LL_all_max, 1)
         end
     end
 end
+sprintf('The error rate of predicting with type: %f', err_cnt/count)
 %% get max average LL
-LL_avg_all = get_avg_LL_all(testset, hmm_models);
+[LL_avg_all, LL_avg_all_index] = get_avg_LL_all(testset, hmm_models);
+% validation
 err_cnt = 0;
 count = 0;
 for type = 1:size(LL_avg_all, 1)
     for cluster = 1:size(LL_avg_all{type, 1}, 1)
         for data = 1:size(LL_avg_all{type, 1}{cluster, 1}, 1)
             count = count + 1;
-            if LL_avg_all{type, 1}{cluster, 1}{data, 1}(type) ~= max(LL_avg_all{type, 1}{cluster, 1}{data, 1})
+            if LL_avg_all_index{type, 1}{cluster, 1}{data, 1} ~= type
                 err_cnt = err_cnt + 1;
             end
         end
     end
 end
-
-
+sprintf('The error rate of predicting type by avg: %f', err_cnt/count)
+%% test by averaging types
+[~, LL_avg_all_index] = get_avg_LL_all(testset, hmm_models);
+result = test_by_avgtype(testset, LL_avg_all_index, hmm_models);
+% validation
+err_cnt = 0; % misclassifications
+count = 0; % total number of test trajectories
+for type = 1:size(result, 1)
+    for cluster = 1:size(result{type, 1}, 1)
+        for data = 1:size(result{type, 1}{cluster, 1}, 1)
+            count = count + 1;
+            if result{type, 1}{cluster, 1}{data, 1}.type ~= type...
+                    || result{type, 1}{cluster, 1}{data, 1}.cluster ~= cluster
+                err_cnt = err_cnt + 1;
+                %sprintf("error: in type=%i, cluster=%i...data=%i, type=%i, cluster=%i",...
+                    %type, cluster, data, LL_all_max{type, 1}{cluster, 1}{data, 1}.type, LL_all_max{type, 1}{cluster, 1}{data, 1}.cluster)
+            end
+        end
+    end
+end
+sprintf('The error rate by deciding type by avg: %f', err_cnt/count)
 
 
 
