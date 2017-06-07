@@ -168,9 +168,74 @@ for type = 1:size(result, 1)
 end
 sprintf('The error rate by deciding type by avg: %f', err_cnt/count)
 
+%% new split
+[trainset, testset] = train_test_split(traj_clustered, 0.9);
+%% MHMM
+hmm_models = train_mhmm(trainset, 4, 3, 2, 100); 
+% vectors for each data, hidden states, mixtures (not sure what this
+% is), maximum 20 iterations
+%%
+LL_all_max = test_mhmm_all_max(testset, hmm_models);
+% validation without type
+err_cnt = 0; % misclassifications
+count = 0; % total number of test trajectories
+unseen = 0;
+for type = 1:size(LL_all_max, 1)
+    for cluster = 1:size(LL_all_max{type, 1}, 1)
+        for data = 1:size(LL_all_max{type, 1}{cluster, 1}, 1)
+            count = count + 1;
+            if LL_all_max{type, 1}{cluster, 1}{data, 1}.type ~= type...
+                    || LL_all_max{type, 1}{cluster, 1}{data, 1}.cluster ~= cluster
+                err_cnt = err_cnt + 1;
+                %fprintf("error: in type=%i, cluster=%i...data=%i, type=%i, cluster=%i",...
+                    %type, cluster, data, LL_all_max{type, 1}{cluster, 1}{data, 1}.type, LL_all_max{type, 1}{cluster, 1}{data, 1}.cluster)
+            end
+            if LL_all_max{type, 1}{cluster, 1}{data, 1}.cluster == 0
+                unseen = unseen + 1;
+            end
+        end
+    end
+end
+fprintf('The error rate of predicting without type: %f\n', err_cnt/count)
+fprintf('The unseen rate: %f\n', unseen/count)
+%% with type MHMM
+LL_all_max = test_mhmm_all_max(testset, hmm_models, true);
 
+err_cnt = 0; % misclassifications
+count = 0; % total number of test trajectories
+unseen = 0;
+for type = 1:size(LL_all_max, 1)
+    for cluster = 1:size(LL_all_max{type, 1}, 1)
+        for data = 1:size(LL_all_max{type, 1}{cluster, 1}, 1)
+            count = count + 1;
+            if LL_all_max{type, 1}{cluster, 1}{data, 1}.cluster ~= cluster
+                err_cnt = err_cnt + 1;
+            end
+            if LL_all_max{type, 1}{cluster, 1}{data, 1}.cluster == 0
+                unseen = unseen + 1;
+            end
+        end
+    end
+end
+fprintf('The error rate of predicting with type: %f\n', err_cnt/count)
+fprintf('The unseen rate: %f\n', unseen/count)
 
-
+%% test by averaging types
+[LL_avg_all, LL_avg_all_index] = get_avg_LL_all(testset, hmm_models);
+% validation
+err_cnt = 0;
+count = 0;
+for type = 1:size(LL_avg_all, 1)
+    for cluster = 1:size(LL_avg_all{type, 1}, 1)
+        for data = 1:size(LL_avg_all{type, 1}{cluster, 1}, 1)
+            count = count + 1;
+            if LL_avg_all_index{type, 1}{cluster, 1}{data, 1} ~= type
+                err_cnt = err_cnt + 1;
+            end
+        end
+    end
+end
+fprintf('The error rate of predicting type by avg: %f\n', err_cnt/count)
 
 
 

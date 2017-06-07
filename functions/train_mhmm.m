@@ -6,6 +6,9 @@ hmm_models = cell(size(data, 1), 1);
 for type = 1:size(hmm_models, 1)
     hmm_models{type, 1} = cell(size(data{type, 1}, 1), 1);
     for cluster = 1:size(data{type, 1}, 1)
+        if numel(data{type, 1}{cluster, 1}) == 0
+            continue;
+        end
         traj = data{type, 1}{cluster, 1};
         % initial guessing
         prior1 = normalise(rand(Q,1));
@@ -15,6 +18,9 @@ for type = 1:size(hmm_models, 1)
             con_mat = horzcat(con_mat, traj{n, 1});
         end
         indices = randperm(size(con_mat, 2));
+        if Q*M > length(indices)
+            fprintf('when type=%i, cluster=%i, length=%i', type, cluster, length(indices));
+        end
         mu1 = reshape(con_mat(:,indices(1:(Q*M))), [O Q M]);
         Sigma1 = repmat(eye(O), [1 1 Q M]);
         mixmat1 = mk_stochastic(rand(Q,M));
