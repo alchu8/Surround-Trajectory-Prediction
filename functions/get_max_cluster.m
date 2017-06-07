@@ -9,8 +9,8 @@ function max_struct = get_max_cluster(LL, type)
     end
     
     if type
-        max_struct.cluster = 1;
-        max_struct.max = LL{max_struct.cluster, 1};
+        max_struct.cluster = 0;
+        max_struct.max = -Inf;
         for c = 1:size(LL, 1)
             if max_struct.max < LL{c, 1}
                 max_struct.max = LL{c, 1};
@@ -18,9 +18,9 @@ function max_struct = get_max_cluster(LL, type)
             end
         end
     else
-        max_struct.type = 1;
-        max_struct.cluster = 1;
-        max_struct.max = LL{max_struct.type, 1}{max_struct.cluster, 1};
+        max_struct.type = 0;
+        max_struct.cluster = 0;
+        max_struct.max = -Inf;
         for t = 1:size(LL, 1)
             for c = 1:size(LL{t, 1}, 1)
                 if max_struct.max < LL{t, 1}{c, 1}

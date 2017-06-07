@@ -77,13 +77,13 @@ O_max = max(O);
 O_min = min(O);
 O_uniq = unique(O);
 %% mapping trajectories from {x, y} to {obs_label}
-[traj_clustered_obs, obs_num] = map2Obs(traj_clustered);
+[traj_clustered_obs, obs_num] = map2Obs(traj_clustered, 0.5);
 
 %% split into training and testing set
-[trainset, testset] = train_test_split(traj_clustered_obs, 0.75);
+[trainset, testset] = train_test_split(traj_clustered_obs, 0.9);
 
 %% train hmm on each cluster
-hmm_models = train_hmm(trainset, obs_num, 5, 10);
+hmm_models = train_hmm(trainset, obs_num, 5, 100);
 
 %% retrieve max struct for each test trajectory
 LL_all_max = test_hmm_all_max(testset, hmm_models);
@@ -91,6 +91,7 @@ LL_all_max = test_hmm_all_max(testset, hmm_models);
 % validation without type
 err_cnt = 0; % misclassifications
 count = 0; % total number of test trajectories
+unseen = 0;
 for type = 1:size(LL_all_max, 1)
     for cluster = 1:size(LL_all_max{type, 1}, 1)
         for data = 1:size(LL_all_max{type, 1}{cluster, 1}, 1)
@@ -101,28 +102,35 @@ for type = 1:size(LL_all_max, 1)
                 %sprintf("error: in type=%i, cluster=%i...data=%i, type=%i, cluster=%i",...
                     %type, cluster, data, LL_all_max{type, 1}{cluster, 1}{data, 1}.type, LL_all_max{type, 1}{cluster, 1}{data, 1}.cluster)
             end
+            if LL_all_max{type, 1}{cluster, 1}{data, 1}.cluster == 0
+                unseen = unseen + 1;
+            end
         end
     end
 end
 sprintf('The error rate of predicting without type: %f', err_cnt/count)
+sprintf('The unseen rate: %f', unseen/count)
 %% validation with type
 LL_all_max = test_hmm_all_max(testset, hmm_models, true);
 
 err_cnt = 0; % misclassifications
 count = 0; % total number of test trajectories
+unseen = 0;
 for type = 1:size(LL_all_max, 1)
     for cluster = 1:size(LL_all_max{type, 1}, 1)
         for data = 1:size(LL_all_max{type, 1}{cluster, 1}, 1)
             count = count + 1;
             if LL_all_max{type, 1}{cluster, 1}{data, 1}.cluster ~= cluster
                 err_cnt = err_cnt + 1;
-                %sprintf("error: in type=%i, cluster=%i...data=%i, type=%i, cluster=%i",...
-                    %type, cluster, data, LL_all_max{type, 1}{cluster, 1}{data, 1}.type, LL_all_max{type, 1}{cluster, 1}{data, 1}.cluster)
+            end
+            if LL_all_max{type, 1}{cluster, 1}{data, 1}.cluster == 0
+                unseen = unseen + 1;
             end
         end
     end
 end
 sprintf('The error rate of predicting with type: %f', err_cnt/count)
+sprintf('The unseen rate: %f', unseen/count)
 %% get max average LL
 [LL_avg_all, LL_avg_all_index] = get_avg_LL_all(testset, hmm_models);
 % validation

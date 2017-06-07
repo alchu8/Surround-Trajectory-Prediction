@@ -31,8 +31,8 @@ function [traj_clustered_obs, obs_num] = map2Obs(traj_clustered, multi_C)
     x_offset = -round(multi_C*x_min) + 1;
     y_offset = -round(multi_C*y_min) + 1;
     
-    x_range = round(multi_C*x_max) + x_offset;
-    y_range = round(multi_C*y_max) + y_offset;
+    x_range = round(multi_C*x_max) + x_offset
+    y_range = round(multi_C*y_max) + y_offset
     obs_num = x_range*y_range;
     
     traj_clustered_obs = traj_clustered;
