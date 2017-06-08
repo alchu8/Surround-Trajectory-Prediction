@@ -1,3 +1,4 @@
+%
 function result = type_split(traj, traj_index, getType)
     uniq = unique(getType);
     result = cell(length(uniq), 1);
