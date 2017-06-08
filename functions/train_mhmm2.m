@@ -16,7 +16,7 @@ for cluster = 1:size(hmm_models, 1)
     end
     indices = randperm(size(con_mat, 2));
     if Q*M > length(indices)
-        fprintf('cluster=%i, length=%i', cluster, length(indices));
+        fprintf('cluster=%i, length=%i\n', cluster, length(indices));
     end
     mu1 = reshape(con_mat(:,indices(1:(Q*M))), [O Q M]);
     Sigma1 = repmat(eye(O), [1 1 Q M]);

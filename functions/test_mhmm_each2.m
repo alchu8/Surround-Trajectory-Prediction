@@ -5,6 +5,9 @@ function LL = test_mhmm_each2(data, hmm_models)
     LL = cell(numel(hmm_models), 1);
     
     for cluster = 1:numel(hmm_models)
+        if numel(hmm_models{cluster}) == 0
+            continue;
+        end
         LL{cluster} = mhmm_logprob(data, ...
             hmm_models{cluster}.prior, ...
             hmm_models{cluster}.transmat,...

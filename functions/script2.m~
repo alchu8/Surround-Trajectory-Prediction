@@ -5,8 +5,6 @@ for type = 1:numel(trajectory_type)
         getType = [getType, type];
     end
 end
-%% plot
-[traj_clustered, traj_clustered_ind] = get_clustered_traj(trajectory_data, W, 100);
 %% train/test split
 train_ratio = 0.75;
 [train, test, train_index, test_index] = train_test_split2(traj_clustered, traj_clustered_ind, train_ratio);
@@ -64,3 +62,12 @@ fprintf('overall, Error = %f\n', err_all/count_all);
 
 
 
+
+
+
+
+
+
+            
+            
+            
