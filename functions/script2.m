@@ -43,14 +43,15 @@ fprintf('done training by type\n');
 %% test seperately
 err_all = 0;
 count_all = 0;
+LL_all = cell(numel(hmm_type), 1);
 for type = 1:numel(hmm_type)
-    LL_all = test_mhmm_all2(test_new{type, 1}, hmm_type{type});
+    LL_all{type, 1} = test_mhmm_all2(test_new{type, 1}, hmm_type{type});
     err = 0;
     count = 0;
-    for cluster = 1:numel(LL_all)
-        for data = 1:numel(LL_all{cluster, 1})
+    for cluster = 1:numel(LL_all{type, 1})
+        for data = 1:numel(LL_all{type, 1}{cluster, 1})
             count = count + 1;
-            if LL_all{cluster, 1}{data, 1}.cluster ~= cluster
+            if LL_all{type, 1}{cluster, 1}{data, 1}.cluster ~= cluster
                 err = err + 1;
             end
         end

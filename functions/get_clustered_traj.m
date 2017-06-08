@@ -44,7 +44,7 @@ function [traj_clustered, traj_clustered_ind] = get_clustered_traj(trajectory_da
         dist = zeros(size(prototypes_post, 1), 1); % distances to each prototype
         for p = 1:size(prototypes_post, 1) % dist between traj and each proto
             proto = prototypes_post(p, :); % 1 x 2L
-            dist(p) = dtw_c(traj_s, proto, 3);
+            dist(p) = dtw(traj_s, proto, 30);
         end
         [~, c] = min(dist); % c is index into prototypes_post
         traj_clustered{c, 1}{1+end, 1} = trajectory_data{t, 1}; % put 4 x T traj into cth cluster

@@ -36,7 +36,7 @@ function [prototypes_pre, cluster_id] = findk(trajectory_data, cell_out, members
         a = prototypes_pre(i, :);
         for j = i+1:k
             b = prototypes_pre(j, :);
-            dist_pairs(count) = dtw_c(a, b, 3);
+            dist_pairs(count) = dtw(a, b, 3);
             count = 1 + count;
         end
     end
