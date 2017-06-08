@@ -41,8 +41,8 @@ for k = 20
     [Center, member_hard, membership_value] = SpectralClustering(W_now, k, 3);
     plot_clusters(trajectory_type{veh_type}, Cluster2Cell(member_hard, membership_value, 0.9), true);
 end
-%% cluster trajectories with initial k's
-traj_clustered = get_clustered_traj(trajectory_type, W_all, [50, 20, 10, 30, 10, 15, 5, 5]);
+%% cluster trajectories with initial large k
+[traj_clustered, traj_clustered_ind] = get_clustered_traj(trajectory_data, W, 100);
 %%
 x = [];
 y = [];
@@ -236,7 +236,6 @@ for type = 1:size(LL_avg_all, 1)
     end
 end
 fprintf('The error rate of predicting type by avg: %f\n', err_cnt/count)
-
 
 
 
