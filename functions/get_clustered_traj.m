@@ -23,7 +23,7 @@ function [traj_clustered, traj_clustered_ind] = get_clustered_traj(trajectory_da
         plot(proto(1, 1), proto(2, 1), 'Color', color, 'Marker', '*');
         legend_str{p} = num2str(p);
     end
-    title('Before merge'); legend(legend_str); hold off;
+    title('Before merge'); hold off;
     subplot(1,2,2); hold on;
     legend_str = cell(size(prototypes_post, 1), 1);
     for p = 1:size(prototypes_post, 1)
@@ -34,7 +34,7 @@ function [traj_clustered, traj_clustered_ind] = get_clustered_traj(trajectory_da
         plot(proto(1, 1), proto(2, 1), 'Color', color, 'Marker', '*');
         legend_str{p} = num2str(p);
     end
-    title('After merge'); legend(legend_str); hold off;
+    title('After merge'); hold off;
 
     traj_clustered = cell(length(cluster_id), 1); % cells of clusters after merge
     traj_clustered_ind = cell(length(cluster_id), 1);
